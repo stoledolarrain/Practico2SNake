@@ -1,4 +1,3 @@
-
 package com.example.practico2snake
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

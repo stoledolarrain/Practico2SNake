@@ -19,7 +19,7 @@ import com.example.practico2snake.direcciones
 class VistaJuego(context: Context, attrs: AttributeSet? = null) : View(context, attrs) {
 
     private val paint = Paint()
-    private val logicaJuego = LogicaJuego(20, 35) 
+    private val logicaJuego = LogicaJuego(20, 35)
     private val handler = Handler(Looper.getMainLooper())
     private val velocidad = 300L
 
@@ -115,7 +115,7 @@ class VistaJuego(context: Context, attrs: AttributeSet? = null) : View(context, 
             setNegativeButton("Terminar el juego") { _, _ ->
                 (context as MainActivity).finish()
             }
-            setCancelable(false) 
+            setCancelable(false)
             show()
         }
     }

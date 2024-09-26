@@ -1,3 +1,4 @@
+
 import com.example.practico2snake.PuntoSerpiente
 import com.example.practico2snake.direcciones
 import kotlin.random.Random
@@ -5,7 +6,7 @@ import kotlin.random.Random
 class LogicaJuego(val width: Int, val height: Int) {
 
     var serpiente = mutableListOf(PuntoSerpiente(width / 2, height / 2)) // Inicializar la serpiente
-    private var currentdirecciones = direcciones.DOWN // Dirección inicial de la serpiente
+    private var currentdirecciones = direcciones.RIGHT // Dirección inicial de la serpiente
     var comida: PuntoSerpiente = generarComida()
     var juegoTerminado = false // indica si el juego terminó
 
@@ -35,9 +36,9 @@ class LogicaJuego(val width: Int, val height: Int) {
 
         // Movimiento de la serpiente en la dirección actual
         val newcabezaSerpiente = when (currentdirecciones) {
-            direcciones.UP -> PuntoSerpiente(cabezaSerpiente.x, (cabezaSerpiente.y - 1 + height) % height) 
+            direcciones.UP -> PuntoSerpiente(cabezaSerpiente.x, (cabezaSerpiente.y - 1 + height) % height)
             direcciones.DOWN -> PuntoSerpiente(cabezaSerpiente.x, (cabezaSerpiente.y + 1) % height)
-            direcciones.LEFT -> PuntoSerpiente((cabezaSerpiente.x - 1 + width) % width, cabezaSerpiente.y) 
+            direcciones.LEFT -> PuntoSerpiente((cabezaSerpiente.x - 1 + width) % width, cabezaSerpiente.y)
             direcciones.RIGHT -> PuntoSerpiente((cabezaSerpiente.x + 1) % width, cabezaSerpiente.y)
         }
 
@@ -54,9 +55,9 @@ class LogicaJuego(val width: Int, val height: Int) {
         if (newcabezaSerpiente == comida) {
             comida = generarComida() // Generar nueva comida si ha comido
         }
-        // Verificar si la serpiente ha ganado (si ocupa toda la matriz)
-        if (serpiente.size == width * height) {
-            juegoTerminado = true
+        else {
+            // Si no ha comido, eliminar la cola (mantener el tamaño de la serpiente)
+            serpiente.removeAt(serpiente.size - 1)
         }
     }
 
@@ -72,7 +73,7 @@ class LogicaJuego(val width: Int, val height: Int) {
     // Reiniciar el estado del juego
     fun reiniciarJuego() {
         serpiente = mutableListOf(PuntoSerpiente(width / 2, height / 2)) // Reiniciar la serpiente en el centro
-        currentdirecciones = direcciones.DOWN // Reiniciar la dirección a la derecha
+        currentdirecciones = direcciones.RIGHT // Reiniciar la dirección a la derecha
         comida = generarComida() // Generar nueva comida
         juegoTerminado = false // Reiniciar el estado de "Game Over"
     }
