@@ -1,88 +1,79 @@
+import com.example.practico2snake.PuntoSerpiente
+import com.example.practico2snake.direcciones
 import kotlin.random.Random
 
-// Enumeración para las direcciones posibles de la serpiente
-enum class Direction { UP, DOWN, LEFT, RIGHT }
-
-// Clase que representa un punto (coordenada) en la matriz
-data class Point(val x: Int, val y: Int)
-
-// Esta clase maneja toda la lógica del juego de la serpiente
 class LogicaJuego(val width: Int, val height: Int) {
 
-    var snake = mutableListOf(Point(width / 2, height / 2)) // Inicializar la serpiente en el centro del tablero
-    private var currentDirection = Direction.RIGHT // Dirección inicial de la serpiente
-    var comida: Point = generarComida()
-    var isGameOver = false // Variable que indica si el juego terminó
+    var serpiente = mutableListOf(PuntoSerpiente(width / 2, height / 2)) // Inicializar la serpiente
+    private var currentdirecciones = direcciones.DOWN // Dirección inicial de la serpiente
+    var comida: PuntoSerpiente = generarComida()
+    var juegoTerminado = false // indica si el juego terminó
 
     // Cambiar la dirección de la serpiente
-    fun setDirection(newDirection: Direction) {
-        if (canChangeDirectionTo(newDirection)) {
-            currentDirection = newDirection
+    fun setdirecciones(newdirecciones: direcciones) {
+        if (canChangedireccionesTo(newdirecciones)) {
+            currentdirecciones = newdirecciones
         }
     }
 
     // Verificar si la serpiente puede cambiar a una nueva dirección sin hacer un giro de 180 grados
-    private fun canChangeDirectionTo(newDirection: Direction): Boolean {
-        return when (newDirection) {
-            Direction.UP -> currentDirection != Direction.DOWN
-            Direction.DOWN -> currentDirection != Direction.UP
-            Direction.LEFT -> currentDirection != Direction.RIGHT
-            Direction.RIGHT -> currentDirection != Direction.LEFT
+    private fun canChangedireccionesTo(newdirecciones: direcciones): Boolean {
+        return when (newdirecciones) {
+            direcciones.UP -> currentdirecciones != direcciones.DOWN
+            direcciones.DOWN -> currentdirecciones != direcciones.UP
+            direcciones.LEFT -> currentdirecciones != direcciones.RIGHT
+            direcciones.RIGHT -> currentdirecciones != direcciones.LEFT
         }
     }
 
-    // Actualizar el estado del juego (mover la serpiente)
-    fun updateGame() {
-        if (isGameOver) return // Si el juego terminó, no hacer nada
+    // Movimiento de la serpiente
+    fun actualizarJuego() {
+        if (juegoTerminado) return // Si el juego terminó, no hacer nada
 
         // Obtener la cabeza actual de la serpiente
-        val head = snake.first()
+        val cabezaSerpiente = serpiente.first()
 
-        // Determinar la nueva posición de la cabeza dependiendo de la dirección actual
-        val newHead = when (currentDirection) {
-            Direction.UP -> Point(head.x, (head.y - 1 + height) % height) // Mover hacia arriba
-            Direction.DOWN -> Point(head.x, (head.y + 1) % height) // Mover hacia abajo
-            Direction.LEFT -> Point((head.x - 1 + width) % width, head.y) // Mover hacia la izquierda
-            Direction.RIGHT -> Point((head.x + 1) % width, head.y) // Mover hacia la derecha
+        // Movimiento de la serpiente en la dirección actual
+        val newcabezaSerpiente = when (currentdirecciones) {
+            direcciones.UP -> PuntoSerpiente(cabezaSerpiente.x, (cabezaSerpiente.y - 1 + height) % height) 
+            direcciones.DOWN -> PuntoSerpiente(cabezaSerpiente.x, (cabezaSerpiente.y + 1) % height)
+            direcciones.LEFT -> PuntoSerpiente((cabezaSerpiente.x - 1 + width) % width, cabezaSerpiente.y) 
+            direcciones.RIGHT -> PuntoSerpiente((cabezaSerpiente.x + 1) % width, cabezaSerpiente.y)
         }
 
         // Verificar si la nueva cabeza colisiona con el cuerpo de la serpiente
-        if (snake.contains(newHead)) {
-            isGameOver = true
+        if (serpiente.contains(newcabezaSerpiente)) {
+            juegoTerminado = true
             return
         }
 
         // Añadir la nueva cabeza a la serpiente
-        snake.add(0, newHead)
+        serpiente.add(0, newcabezaSerpiente)
 
         // Verificar si la serpiente ha comido la comida
-        if (newHead == comida) {
+        if (newcabezaSerpiente == comida) {
             comida = generarComida() // Generar nueva comida si ha comido
-        } else {
-            // Si no ha comido, eliminar la cola (mantener el tamaño de la serpiente)
-            snake.removeAt(snake.size - 1)
         }
-
         // Verificar si la serpiente ha ganado (si ocupa toda la matriz)
-        if (snake.size == width * height) {
-            isGameOver = true
+        if (serpiente.size == width * height) {
+            juegoTerminado = true
         }
     }
 
     // Generar un nuevo punto de comida en una posición aleatoria que no esté ocupada por la serpiente
-    private fun generarComida(): Point {
-        var newcomida: Point
+    private fun generarComida(): PuntoSerpiente {
+        var newcomida: PuntoSerpiente
         do {
-            newcomida = Point(Random.nextInt(width), Random.nextInt(height))
-        } while (snake.contains(newcomida)) // Asegurarse de que la comida no aparezca en el cuerpo de la serpiente
+            newcomida = PuntoSerpiente(Random.nextInt(width), Random.nextInt(height))
+        } while (serpiente.contains(newcomida)) // Asegurarse de que la comida no aparezca en el cuerpo de la serpiente
         return newcomida
     }
 
     // Reiniciar el estado del juego
     fun reiniciarJuego() {
-        snake = mutableListOf(Point(width / 2, height / 2)) // Reiniciar la serpiente en el centro
-        currentDirection = Direction.RIGHT // Reiniciar la dirección a la derecha
+        serpiente = mutableListOf(PuntoSerpiente(width / 2, height / 2)) // Reiniciar la serpiente en el centro
+        currentdirecciones = direcciones.DOWN // Reiniciar la dirección a la derecha
         comida = generarComida() // Generar nueva comida
-        isGameOver = false // Reiniciar el estado de "Game Over"
+        juegoTerminado = false // Reiniciar el estado de "Game Over"
     }
 }

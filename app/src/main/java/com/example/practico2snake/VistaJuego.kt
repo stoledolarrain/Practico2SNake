@@ -1,4 +1,4 @@
-package com.example.practico2snake
+package com.example.practico2serpiente
 
 import LogicaJuego
 import android.annotation.SuppressLint
@@ -12,14 +12,16 @@ import android.os.Looper
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import com.example.practico2snake.MainActivity
+import com.example.practico2snake.direcciones
 
-// Esta clase representa la vista del juego donde se dibuja la serpiente y la comida
+
 class VistaJuego(context: Context, attrs: AttributeSet? = null) : View(context, attrs) {
 
     private val paint = Paint()
     private val logicaJuego = LogicaJuego(20, 35) 
     private val handler = Handler(Looper.getMainLooper())
-    private val updateInterval = 300L
+    private val velocidad = 300L
 
     init {
         paint.color = Color.GRAY // Configurar el color de la serpiente
@@ -28,19 +30,19 @@ class VistaJuego(context: Context, attrs: AttributeSet? = null) : View(context, 
 
     // Iniciar el movimiento automático de la serpiente
     private fun iniciarJuego() {
-        // Usar un Runnable para actualizar el juego cada cierto tiempo
+
         handler.postDelayed(object : Runnable {
             override fun run() {
-                logicaJuego.updateGame() // Actualiza el estado del juego (mover la serpiente)
+                logicaJuego.actualizarJuego() // Actualiza el estado del juego (mover la serpiente)
 
-                if (logicaJuego.isGameOver) {
-                    showGameOverDialog() // Mostrar diálogo de "Juego Terminado" si la serpiente muere
+                if (logicaJuego.juegoTerminado) {
+                    showJuegoTerminado() // Mostrar "Juego Terminado" si la serpiente muere
                 } else {
-                    invalidate() // Redibujar la vista (actualiza la pantalla)
-                    handler.postDelayed(this, updateInterval) // Repetir la actualización cada 300ms
+                    invalidate()
+                    handler.postDelayed(this, velocidad) // Repetir la actualización cada 300ms
                 }
             }
-        }, updateInterval)
+        }, velocidad)
     }
 
     // Método que dibuja la serpiente y la comida en la pantalla
@@ -48,27 +50,27 @@ class VistaJuego(context: Context, attrs: AttributeSet? = null) : View(context, 
         super.onDraw(canvas)
 
         // Calcular el tamaño de cada celda en función del tamaño de la pantalla
-        val cellWidth = width / logicaJuego.width
-        val cellHeight = height / logicaJuego.height
+        val celdaWidth = width / logicaJuego.width
+        val celdaHeight = height / logicaJuego.height
 
         // Dibujar cada parte del cuerpo de la serpiente
-        for (part in logicaJuego.snake) {
+        for (part in logicaJuego.serpiente) {
             canvas.drawRect(
-                part.x * cellWidth.toFloat(),
-                part.y * cellHeight.toFloat(),
-                (part.x + 1) * cellWidth.toFloat(),
-                (part.y + 1) * cellHeight.toFloat(),
+                part.x * celdaWidth.toFloat(),
+                part.y * celdaHeight.toFloat(),
+                (part.x + 1) * celdaWidth.toFloat(),
+                (part.y + 1) * celdaHeight.toFloat(),
                 paint
             )
         }
 
-        // Cambiar el color para dibujar la comida
+        // color comida
         paint.color = Color.RED
         canvas.drawRect(
-            logicaJuego.comida.x * cellWidth.toFloat(),
-            logicaJuego.comida.y * cellHeight.toFloat(),
-            (logicaJuego.comida.x + 1) * cellWidth.toFloat(),
-            (logicaJuego.comida.y + 1) * cellHeight.toFloat(),
+            logicaJuego.comida.x * celdaWidth.toFloat(),
+            logicaJuego.comida.y * celdaHeight.toFloat(),
+            (logicaJuego.comida.x + 1) * celdaWidth.toFloat(),
+            (logicaJuego.comida.y + 1) * celdaHeight.toFloat(),
             paint
         )
         // Restaurar el color de la serpiente
@@ -82,29 +84,29 @@ class VistaJuego(context: Context, attrs: AttributeSet? = null) : View(context, 
             // Obtener las coordenadas del toque
             val x = event.x
             val y = event.y
-            val screenWidth = width
-            val screenHeight = height
+            val pantallaWidth = width
+            val pantallaHeight = height
 
             // Determinar la dirección de la serpiente según la parte de la pantalla tocada
-            if (x < screenWidth / 3) {
+            if (x < pantallaWidth / 3) {
                 // Parte izquierda de la pantalla -> Cambiar a dirección izquierda
-                logicaJuego.setDirection(Direction.LEFT)
-            } else if (x > 2 * screenWidth / 3) {
+                logicaJuego.setdirecciones(direcciones.LEFT)
+            } else if (x > 2 * pantallaWidth / 3) {
                 // Parte derecha de la pantalla -> Cambiar a dirección derecha
-                logicaJuego.setDirection(Direction.RIGHT)
-            } else if (y < screenHeight / 3) {
+                logicaJuego.setdirecciones(direcciones.RIGHT)
+            } else if (y < pantallaHeight / 3) {
                 // Parte superior de la pantalla -> Cambiar a dirección arriba
-                logicaJuego.setDirection(Direction.UP)
-            } else if (y > 2 * screenHeight / 3) {
+                logicaJuego.setdirecciones(direcciones.UP)
+            } else if (y > 2 * pantallaHeight / 3) {
                 // Parte inferior de la pantalla -> Cambiar a dirección abajo
-                logicaJuego.setDirection(Direction.DOWN)
+                logicaJuego.setdirecciones(direcciones.DOWN)
             }
         }
         return true
     }
 
     // Mostrar un diálogo cuando el juego termine (cuando la serpiente muera)
-    private fun showGameOverDialog() {
+    private fun showJuegoTerminado() {
         AlertDialog.Builder(context).apply {
             setMessage("Te has muerto")
             setPositiveButton("Jugar de nuevo ") { _, _ -> //El setPositiveButton hace referencia al botón de la derecha
