@@ -7,7 +7,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Establece el SnakeGameView como el contenido de la actividad
+        // Establece el Vista Juego como el contenido de la actividad
         setContentView(VistaJuego(this))
     }
 }

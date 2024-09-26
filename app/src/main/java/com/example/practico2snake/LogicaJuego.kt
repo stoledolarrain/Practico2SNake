@@ -11,7 +11,7 @@ class LogicaJuego(val width: Int, val height: Int) {
 
     var snake = mutableListOf(Point(width / 2, height / 2)) // Inicializar la serpiente en el centro del tablero
     private var currentDirection = Direction.RIGHT // Dirección inicial de la serpiente
-    var comida: Point = generarComida() // Generar la comida en una posición aleatoria
+    var comida: Point = generarComida()
     var isGameOver = false // Variable que indica si el juego terminó
 
     // Cambiar la dirección de la serpiente
@@ -48,7 +48,7 @@ class LogicaJuego(val width: Int, val height: Int) {
 
         // Verificar si la nueva cabeza colisiona con el cuerpo de la serpiente
         if (snake.contains(newHead)) {
-            isGameOver = true // Si colisiona, el juego termina
+            isGameOver = true
             return
         }
 
@@ -79,7 +79,7 @@ class LogicaJuego(val width: Int, val height: Int) {
     }
 
     // Reiniciar el estado del juego
-    fun resetGame() {
+    fun reiniciarJuego() {
         snake = mutableListOf(Point(width / 2, height / 2)) // Reiniciar la serpiente en el centro
         currentDirection = Direction.RIGHT // Reiniciar la dirección a la derecha
         comida = generarComida() // Generar nueva comida

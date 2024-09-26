@@ -16,10 +16,10 @@ import android.view.View
 // Esta clase representa la vista del juego donde se dibuja la serpiente y la comida
 class VistaJuego(context: Context, attrs: AttributeSet? = null) : View(context, attrs) {
 
-    private val paint = Paint()  // Herramienta de dibujo
-    private val logicaJuego = LogicaJuego(20, 35) // Lógica del juego con una matriz de 20x35
-    private val handler = Handler(Looper.getMainLooper()) // Handler para el movimiento automático
-    private val updateInterval = 300L // Tiempo en milisegundos para mover la serpiente (0.3 segundos)
+    private val paint = Paint()
+    private val logicaJuego = LogicaJuego(20, 35) 
+    private val handler = Handler(Looper.getMainLooper())
+    private val updateInterval = 300L
 
     init {
         paint.color = Color.GRAY // Configurar el color de la serpiente
@@ -107,20 +107,20 @@ class VistaJuego(context: Context, attrs: AttributeSet? = null) : View(context, 
     private fun showGameOverDialog() {
         AlertDialog.Builder(context).apply {
             setMessage("Te has muerto")
-            setPositiveButton("Jugar de nuevo ") { _, _ ->
+            setPositiveButton("Jugar de nuevo ") { _, _ -> //El setPositiveButton hace referencia al botón de la derecha
                 reiniciarJuego()
             }
             setNegativeButton("Terminar el juego") { _, _ ->
                 (context as MainActivity).finish()
             }
-            setCancelable(false) // No permitir que el diálogo se cierre sin elegir una opción
+            setCancelable(false) 
             show()
         }
     }
 
     // Reiniciar el juego cuando el usuario elija "Reiniciar"
     private fun reiniciarJuego() {
-        logicaJuego.resetGame() // Resetear el estado del juego
+        logicaJuego.reiniciarJuego() // Resetear el estado del juego
         iniciarJuego() // Iniciar el loop del movimiento nuevamente
         invalidate() // Redibujar la vista
     }
